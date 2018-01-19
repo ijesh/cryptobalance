@@ -55,6 +55,7 @@ def watch_loop(client, sleep_time = 30):
             print("Fetched at: "+ str(datetime.now()))
             account_info = client.get_account()
             nonzero_balances = get_nonzero_balances(account_info['balances'])
+            btcusdt = btcusdt_price(client)
             sleep(sleep_time) #every 30 secs
             print("\n*****************************************************\n")
 
@@ -81,6 +82,13 @@ def get_nonzero_balances(balances):
             continue
     return nonzero_balances
 
+def btcusdt_price(client):
+    prices = client.get_symbol_ticker()
+    for price in prices:
+        if price['symbol'] == 'BTCUSDT':
+            return float(price['price'])
+    print('Price of BTCUSDT not found')
+    return 0
 
 if __name__ == '__main__':
     print_header()
