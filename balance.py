@@ -52,10 +52,29 @@ def main():
 def watch_loop(client, sleep_time = 30):
     try:
         while True:
+            btc_price_usd = get_currency_price_in_usd(client, "BTC")
+            eth_price_usd = get_currency_price_in_usd(client, "ETH")
+
             print("Fetched at: "+ str(datetime.now()))
             account_info = client.get_account()
             nonzero_balances = get_nonzero_balances(account_info['balances'])
-            btcusdt = btcusdt_price(client)
+            total = 0
+            for key, value in nonzero_balances.iteritems():
+                if(key == "BCX" or key == "SBTC"):
+                    continue
+                currency_price_usd = 0.00
+                try:
+                    currency_price_usd = get_currency_price_in_usd(client, key)
+                except:
+                    try:
+                        currency_price_usd = get_currency_price_in_usd(client, key, "BTC") * btc_price_usd
+                    except:
+                        currency_price_usd = get_currency_price_in_usd(client, key, "ETH") * eth_price_usd
+                symbolValue = value * currency_price_usd
+                if(symbolValue > 1000):
+                    print(key + ": " + str(symbolValue) + " USD")
+                total += symbolValue
+            print("Total balance: " + str(round(total, 2)) + " USD")
             sleep(sleep_time) #every 30 secs
             print("\n*****************************************************\n")
 
@@ -66,29 +85,18 @@ def watch_loop(client, sleep_time = 30):
 def get_nonzero_balances(balances):
     nonzero_balances = {}
     for balance in balances:
-        if(float(balance['free']) > 0.0):
-            print(balance['free'] + " " + balance['asset'])
-            nonzero_balances[balance['asset']] = float(balance['free'])
-
-        if(float(balance['locked']) > 0.0):
-            try:
-                value = nonzero_balances[balance['asset']] + float(balance['locked'])
-                print(str(value) + " " + balance['asset'])
-                nonzero_balances[balance['asset']] = value
-            except KeyError:
-                print(balance['locked'] + " " + balance['asset'])
-                nonzero_balances[balance['asset']] = float(balance['locked'])
+        total = float(balance['free']) + float(balance['locked'])
+        if(total > 0.0):
+            nonzero_balances[balance['asset']] = total
         else:
             continue
     return nonzero_balances
 
-def btcusdt_price(client):
-    prices = client.get_symbol_ticker()
-    for price in prices:
-        if price['symbol'] == 'BTCUSDT':
-            return float(price['price'])
-    print('Price of BTCUSDT not found')
-    return 0
+def get_currency_price_in_usd(client, currency, base_currency="USDT"):
+    currency_pair = "{}{}".format(currency, base_currency)
+    api_response = client.get_symbol_ticker(symbol=currency_pair)
+    # print(api_response)
+    return float(api_response['price'])
 
 if __name__ == '__main__':
     print_header()
