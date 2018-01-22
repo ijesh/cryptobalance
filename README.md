@@ -9,13 +9,12 @@ Pipenv must be installed to activate virtual env. Run *pipenv shell* before runn
 Usage:
 *python balance.py --config config.yaml*
 
-Config.yaml file format:
-`
+###### Config.yaml file format:
+```
 binance:
   APIKey: [apikey-here]
   Secret: [secretkey-here]
 bittrex:
   APIKey: [apikey-here]
   Secret: [secretkey-here]
-
-`
+```
