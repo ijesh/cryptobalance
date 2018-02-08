@@ -14,7 +14,7 @@ _________                        __        ___.          .__
 \     \____|  | \/\___  ||  |_> >  | (  <_> ) \_\ \/ __ \|  |__/ __ \|   |  \  \__\  ___/
  \______  /|__|   / ____||   __/|__|  \____/|___  (____  /____(____  /___|  /\___  >___  >
         \/        \/     |__|                   \/     \/          \/     \/     \/    \/
-        
+
          Created by: Ijesh Giri
 '''
 
@@ -47,9 +47,10 @@ def main():
         binance_key = info_dict['binance']['APIKey']
         binance_secret = info_dict['binance']['Secret']
         client = Client(binance_key, binance_secret)
-        # watch_loop(client, 30)
+        print("\nBinance")
         total = get_total(client)
 
+        print("\nBittrex")
         bittrex_key = info_dict['bittrex']['APIKey']
         bittrex_secret = info_dict['bittrex']['Secret']
         myBittrex = MyBittrex(bittrex_key, bittrex_secret)

@@ -27,7 +27,7 @@ class MyBittrex():
                         # print(payload)
                         usd = float(payload['result']['Last']) * balance
                     total += usd
-                    print(currency + ": "+ str(usd))
+                    print(currency + ": "+ str(usd) + " USD")
                 except:
                     print("Error retrieving usd value for symbol: "+ currency)
         return total
